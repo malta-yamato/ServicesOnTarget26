@@ -21,6 +21,8 @@
             android:name=".ServiceDemo_A"
             android:label="Demo A"/>
 
+        <service android:name=".service.Service_A"/>
+
     </application>
 
 </manifest>
