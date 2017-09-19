@@ -9,23 +9,29 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
-import static android.content.ContentValues.TAG;
-
 public class AppFiles {
+    private static final String TAG = "AppFiles";
 
-    public static FileInputStream openFileInput(Context context, Class<? extends Service> clazz)
-            throws FileNotFoundException {
-        return context.openFileInput(getCorrespondingName(clazz));
+    @SuppressWarnings("unused")
+    public static FileInputStream openFileInput(Context context, Class<? extends Service> clazz,
+            String name) throws FileNotFoundException {
+        return context.openFileInput(getCorrespondingName(clazz, name));
     }
 
-    public static FileOutputStream openFileOutput(Context context, Class<? extends Service> clazz)
-            throws FileNotFoundException {
-        return context.openFileOutput(getCorrespondingName(clazz), Context.MODE_PRIVATE);
+    @SuppressWarnings("unused")
+    public static FileOutputStream openFileOutput(Context context, Class<? extends Service> clazz,
+            String name, int mode) throws FileNotFoundException {
+        return context.openFileOutput(getCorrespondingName(clazz, name), mode);
     }
 
+    @SuppressWarnings("unused")
     public static SharedPreferences getSharedPreferences(Context context,
-            Class<? extends Service> clazz, int mode) {
-        return context.getSharedPreferences(getCorrespondingName(clazz), mode);
+            Class<? extends Service> clazz) {
+        return context.getSharedPreferences(getCorrespondingName(clazz), Context.MODE_PRIVATE);
+    }
+
+    private static String getCorrespondingName(Class<? extends Service> clazz, String suffix) {
+        return getCorrespondingName(clazz) + "." + suffix;
     }
 
     private static String getCorrespondingName(Class<? extends Service> clazz) {
