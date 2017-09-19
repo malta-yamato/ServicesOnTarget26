@@ -19,13 +19,55 @@ package jp.malta_yamto.servicesontarget26.service;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.support.annotation.Nullable;
+import android.util.Log;
+
+import jp.malta_yamto.servicesontarget26.aidl.ITimerService;
+import jp.malta_yamto.servicesontarget26.aidl.ITimerServiceCallback;
 
 public class Service_A extends Service {
+    private static final String TAG = "Service_A";
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.d(TAG, "onCreate: start");
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(TAG, "onStartCommand: flags, startId = " + flags + ", " + startId);
+        return super.onStartCommand(intent, flags, startId);
+    }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return mBinder;
     }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        mCallback = null;
+        return super.onUnbind(intent);
+    }
+
+    //
+    // Service Stub
+    //
+
+    private ITimerServiceCallback mCallback = null;
+
+    private ITimerService.Stub mBinder = new ITimerService.Stub() {
+        @Override
+        public void registerCallback(ITimerServiceCallback callback) throws RemoteException {
+            mCallback = callback;
+        }
+
+        @Override
+        public void unregisterCallback(ITimerServiceCallback callback) throws RemoteException {
+            mCallback = null;
+        }
+    };
 }

@@ -16,7 +16,10 @@
 
 package jp.malta_yamto.servicesontarget26;
 
+import android.content.ComponentName;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +27,7 @@ import android.util.Log;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import jp.malta_yamto.servicesontarget26.aidl.ITimerService;
 import jp.malta_yamto.servicesontarget26.service.Service_A;
 
 public class ServiceDemo_A extends AppCompatActivity {
@@ -40,4 +44,25 @@ public class ServiceDemo_A extends AppCompatActivity {
         Log.d(TAG, "onCreate: afterText = " + afterText);
         prefs.edit().putString("TEST", afterText).apply();
     }
+
+    //
+    // Service
+    //
+
+    ITimerService mITimerService;
+    private ServiceConnection mConnection = new ServiceConnection() {
+        // Called when the connection with the service is established
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            mITimerService = ITimerService.Stub.asInterface(service);
+            // TODO: register callback
+            // TODO: disable start button
+        }
+
+        // Called when the connection with the service disconnects unexpectedly
+        public void onServiceDisconnected(ComponentName className) {
+            Log.e(TAG, "Service has unexpectedly disconnected");
+            // TODO: enable start button
+            mITimerService = null;
+        }
+    };
 }
