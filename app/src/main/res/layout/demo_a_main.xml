@@ -7,7 +7,7 @@
     tools:context="jp.malta_yamto.servicesontarget26.ServiceDemo_A">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/text_timer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -16,46 +16,35 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_unbind_service"
+        app:layout_constraintTop_toBottomOf="@+id/button_stop_timer"
         tools:ignore="HardcodedText"/>
 
     <Button
-        android:id="@+id/button_start_service"
+        android:id="@+id/button_start_timer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Start Service"
+        android:onClick="onStartTimerClick"
+        android:text="Start Timer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="HardcodedText"/>
 
     <Button
-        android:id="@+id/button_bind_service"
+        android:id="@+id/button_stop_timer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Bind Service"
+        android:onClick="onStopTimerClick"
+        android:text="Stop Timer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_start_service"
-        tools:ignore="HardcodedText"/>
-
-    <Button
-        android:id="@+id/button_unbind_service"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Unbind Service"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_bind_service"
+        app:layout_constraintTop_toBottomOf="@+id/button_start_timer"
         tools:ignore="HardcodedText"/>
 
 </android.support.constraint.ConstraintLayout>

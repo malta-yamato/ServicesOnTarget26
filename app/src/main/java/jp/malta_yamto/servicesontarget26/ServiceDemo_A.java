@@ -17,32 +17,94 @@
 package jp.malta_yamto.servicesontarget26;
 
 import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import jp.malta_yamto.servicesontarget26.aidl.ITimerService;
+import jp.malta_yamto.servicesontarget26.aidl.ITimerServiceCallback;
 import jp.malta_yamto.servicesontarget26.service.Service_A;
 
 public class ServiceDemo_A extends AppCompatActivity {
     private static final String TAG = "ServiceDemo_A";
 
+    private Handler mHandler = new Handler();
+
+    private TextView mTimerText;
+    private Button mStartTimerButton;
+    private Button mStopTimerButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate: start");
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.demo_a_main);
-        SharedPreferences prefs = AppFiles.getSharedPreferences(this, Service_A.class);
-        String beforeText = prefs.getString("TEST", "none");
-        Log.d(TAG, "onCreate: beforeText = " + beforeText);
-        String afterText = SimpleDateFormat.getDateTimeInstance().format(new Date());
-        Log.d(TAG, "onCreate: afterText = " + afterText);
-        prefs.edit().putString("TEST", afterText).apply();
+        mTimerText = findViewById(R.id.text_timer);
+        mStartTimerButton = findViewById(R.id.button_start_timer);
+        mStopTimerButton = findViewById(R.id.button_stop_timer);
+    }
+
+    @Override
+    protected void onResume() {
+        Log.d(TAG, "onResume: start");
+        super.onResume();
+
+        mStartTimerButton.setEnabled(false);
+        mStopTimerButton.setEnabled(false);
+
+        Intent serviceIntent = new Intent(this, Service_A.class);
+        startService(serviceIntent);
+        bindService(serviceIntent, mConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onPause() {
+        Log.d(TAG, "onPause: start");
+        super.onPause();
+
+        if (mConnection != null) {
+            unbindService(mConnection);
+        }
+    }
+
+    //
+    // Button Listener
+    //
+
+    public void onStartTimerClick(View view) {
+        Log.d(TAG, "onStartTimerClick: start");
+        if (mITimerService != null) {
+            try {
+                mITimerService.startTimer();
+                mStartTimerButton.setEnabled(false);
+                mStopTimerButton.setEnabled(true);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void onStopTimerClick(View view) {
+        Log.d(TAG, "onStopTimerClick: start");
+        if (mITimerService != null) {
+            try {
+                mITimerService.stopTimer();
+                mStartTimerButton.setEnabled(true);
+                mStopTimerButton.setEnabled(false);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     //
@@ -53,16 +115,34 @@ public class ServiceDemo_A extends AppCompatActivity {
     private ServiceConnection mConnection = new ServiceConnection() {
         // Called when the connection with the service is established
         public void onServiceConnected(ComponentName className, IBinder service) {
+            Log.d(TAG, "onServiceConnected: start");
             mITimerService = ITimerService.Stub.asInterface(service);
-            // TODO: register callback
-            // TODO: disable start button
+            try {
+                mITimerService.registerCallback(mCallback);
+                mStartTimerButton.setEnabled(true);
+                mStopTimerButton.setEnabled(true);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
 
         // Called when the connection with the service disconnects unexpectedly
         public void onServiceDisconnected(ComponentName className) {
-            Log.e(TAG, "Service has unexpectedly disconnected");
-            // TODO: enable start button
+            Log.d(TAG, "onServiceDisconnected: start");
             mITimerService = null;
         }
     };
+
+    ITimerServiceCallback mCallback = new ITimerServiceCallback.Stub() {
+        @Override
+        public void onCountUp(final int currentTimeSec) throws RemoteException {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mTimerText.setText(String.valueOf(currentTimeSec));
+                }
+            });
+        }
+    };
+
 }
