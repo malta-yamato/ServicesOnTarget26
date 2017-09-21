@@ -13,4 +13,8 @@ interface ITimerService {
 
 	oneway void unregisterCallback(ITimerServiceCallback callback);
 
+	oneway void startTimer();
+
+	oneway void stopTimer();
+
 }
