@@ -55,12 +55,19 @@ public class ServiceDemo_A extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        Log.d(TAG, "onStart: start");
+        super.onStart();
+    }
+
+    @Override
     protected void onResume() {
         Log.d(TAG, "onResume: start");
         super.onResume();
 
         mStartTimerButton.setEnabled(false);
         mStopTimerButton.setEnabled(false);
+        mTimerText.setText("");
 
         Intent serviceIntent = new Intent(this, Service_A.class);
         startService(serviceIntent);
@@ -75,6 +82,18 @@ public class ServiceDemo_A extends AppCompatActivity {
         if (mConnection != null) {
             unbindService(mConnection);
         }
+    }
+
+    @Override
+    protected void onStop() {
+        Log.d(TAG, "onStop: ");
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG, "onDestroy: ");
+        super.onDestroy();
     }
 
     //
@@ -119,8 +138,14 @@ public class ServiceDemo_A extends AppCompatActivity {
             mITimerService = ITimerService.Stub.asInterface(service);
             try {
                 mITimerService.registerCallback(mCallback);
-                mStartTimerButton.setEnabled(true);
-                mStopTimerButton.setEnabled(true);
+                if (mITimerService.isTimerRunning()) {
+                    mStartTimerButton.setEnabled(false);
+                    mStopTimerButton.setEnabled(true);
+                } else {
+                    mStartTimerButton.setEnabled(true);
+                    mStopTimerButton.setEnabled(false);
+                }
+                mTimerText.setText(String.valueOf(mITimerService.getLatestValue()));
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -136,6 +161,7 @@ public class ServiceDemo_A extends AppCompatActivity {
     ITimerServiceCallback mCallback = new ITimerServiceCallback.Stub() {
         @Override
         public void onCountUp(final int currentTimeSec) throws RemoteException {
+            Log.d(TAG, "onCountUp: currentTimeSec = " + currentTimeSec);
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
