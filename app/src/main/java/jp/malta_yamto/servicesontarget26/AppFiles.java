@@ -25,6 +25,11 @@ public class AppFiles {
     }
 
     @SuppressWarnings("unused")
+    public static SharedPreferences getSharedPreferences(Service service) {
+        return getSharedPreferences(service, service.getClass());
+    }
+
+    @SuppressWarnings("unused")
     public static SharedPreferences getSharedPreferences(Context context,
             Class<? extends Service> clazz) {
         return context.getSharedPreferences(getCorrespondingName(clazz), Context.MODE_PRIVATE);

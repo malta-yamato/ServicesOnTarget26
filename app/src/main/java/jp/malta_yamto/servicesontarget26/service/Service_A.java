@@ -18,19 +18,30 @@ package jp.malta_yamto.servicesontarget26.service;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import jp.malta_yamto.servicesontarget26.AppFiles;
 import jp.malta_yamto.servicesontarget26.aidl.ITimerService;
 import jp.malta_yamto.servicesontarget26.aidl.ITimerServiceCallback;
 
 public class Service_A extends Service {
     private static final String TAG = "Service_A";
+
+    public static final long INVALID_TIME = -1L;
+
+    public static final String PREF_KEY_TIME_ON_CREATE = "pref_key_time_on_create";
+    public static final String PREF_KEY_TIME_ON_DESTROY = "pref_key_time_on_destroy";
+    public static final String PREF_KEY_TIMER_EXPERIENCE = "pref_key_timer_experience";
 
     public static final long TIMER_DELAY_MILLISEC = 1000L;
     public static final long TIMER_PERIOD_MILLISEC = 1000L;
@@ -39,6 +50,34 @@ public class Service_A extends Service {
     public void onCreate() {
         Log.d(TAG, "onCreate: start");
         super.onCreate();
+
+        // last results
+        SharedPreferences prefs = AppFiles.getSharedPreferences(this);
+        long timeOnCreate = prefs.getLong(PREF_KEY_TIME_ON_CREATE, INVALID_TIME);
+        long timeOnDestroy = prefs.getLong(PREF_KEY_TIME_ON_DESTROY, INVALID_TIME);
+        int timerExperience = prefs.getInt(PREF_KEY_TIMER_EXPERIENCE, 0);
+        if (timeOnCreate != INVALID_TIME) {
+            String descTimeOnCreate = "onCreate: " +
+                    SimpleDateFormat.getDateTimeInstance().format(new Date(timeOnCreate));
+            String descTimeOnDestroy;
+            if (timeOnDestroy != INVALID_TIME) {
+                descTimeOnDestroy = "onDestroy: " +
+                        SimpleDateFormat.getDateTimeInstance().format(new Date(timeOnDestroy));
+            } else {
+                descTimeOnDestroy = "onDestroy: unknown";
+            }
+            String descTimerExperience = "Timer EXP: " + String.valueOf(timerExperience);
+            String descToast =
+                    "last results\n" + descTimeOnCreate + "\n" + descTimeOnDestroy + "\n" +
+                            descTimerExperience;
+            Toast.makeText(this, descToast, Toast.LENGTH_LONG).show();
+        }
+
+        // write current time to preferences.
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putLong(PREF_KEY_TIME_ON_CREATE, System.currentTimeMillis());
+        editor.putLong(PREF_KEY_TIME_ON_DESTROY, -1L);
+        editor.apply();
     }
 
     @Override
@@ -64,13 +103,18 @@ public class Service_A extends Service {
     @Override
     public void onDestroy() {
         Log.d(TAG, "onDestroy: start");
-        stopTimerService();
         super.onDestroy();
+        //
+        stopTimerService();
+        // write current time to preferences.
+        SharedPreferences.Editor editor = AppFiles.getSharedPreferences(this, getClass()).edit();
+        editor.putLong(PREF_KEY_TIME_ON_DESTROY, System.currentTimeMillis());
+        editor.apply();
     }
 
     //
     // Timer
-    // This implementation isn't a best practice, it is only aimed at a experiment for service.
+    // only aimed at a experiment for service.
 
     private CountUpTimer mTimer;
     private int mLastValue = 0;
@@ -95,17 +139,26 @@ public class Service_A extends Service {
             @Override
             public void run() {
                 Log.d(TAG, "TimerTask run: value = " + value);
+
                 value += 1;
+
+                if (value % 100 == 0) {
+                    SharedPreferences.Editor editor =
+                            AppFiles.getSharedPreferences(Service_A.this).edit();
+                    editor.putInt(PREF_KEY_TIMER_EXPERIENCE, value / 100);
+                    editor.apply();
+                }
+
                 if (mCallback == null) {
                     return;
                 }
-
                 try {
                     mCallback.onCountUp(value);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 } catch (NullPointerException ignore) {
                 }
+
             }
         }
 
