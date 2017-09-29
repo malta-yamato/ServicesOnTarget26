@@ -17,6 +17,8 @@ interface ITimerService {
 
 	oneway void stopTimer();
 
+	int getPid();
+
 	boolean isTimerRunning();
 
 	int getLatestValue();

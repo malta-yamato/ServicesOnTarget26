@@ -83,7 +83,7 @@ public class Service_A extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand: flags, startId = " + flags + ", " + startId);
-        return super.onStartCommand(intent, flags, startId);
+        return START_NOT_STICKY;
     }
 
     @Nullable
@@ -209,6 +209,11 @@ public class Service_A extends Service {
         public void stopTimer() throws RemoteException {
             Log.d(TAG, "stopTimer: start");
             stopTimerService();
+        }
+
+        @Override
+        public int getPid() {
+            return android.os.Process.myPid();
         }
 
         @Override

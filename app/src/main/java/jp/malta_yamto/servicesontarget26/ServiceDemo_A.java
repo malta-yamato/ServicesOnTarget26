@@ -39,7 +39,13 @@ public class ServiceDemo_A extends AppCompatActivity {
 
     private Handler mHandler = new Handler();
 
+    ITimerService mTimerService;
+    private ServiceConnection mConnection = null;
+    private boolean mShouldServiceExisting = false;
+
     private TextView mTimerText;
+    private Button mConnectServiceButton;
+    private Button mDisconnectServiceButton;
     private Button mStartTimerButton;
     private Button mStopTimerButton;
 
@@ -50,8 +56,12 @@ public class ServiceDemo_A extends AppCompatActivity {
 
         setContentView(R.layout.demo_a_main);
         mTimerText = findViewById(R.id.text_timer);
+        mConnectServiceButton = findViewById(R.id.button_connect_service);
+        mDisconnectServiceButton = findViewById(R.id.button_disconnect_service);
         mStartTimerButton = findViewById(R.id.button_start_timer);
         mStopTimerButton = findViewById(R.id.button_stop_timer);
+
+        turnDefaultCondition();
     }
 
     @Override
@@ -69,9 +79,9 @@ public class ServiceDemo_A extends AppCompatActivity {
         mStopTimerButton.setEnabled(false);
         mTimerText.setText("");
 
-        Intent serviceIntent = new Intent(this, Service_A.class);
-        startService(serviceIntent);
-        bindService(serviceIntent, mConnection, Context.BIND_AUTO_CREATE);
+        if (mShouldServiceExisting) {
+            generateServiceIfNotExistAndSendStartCommandAndBind();
+        }
     }
 
     @Override
@@ -96,15 +106,37 @@ public class ServiceDemo_A extends AppCompatActivity {
         super.onDestroy();
     }
 
+    private void generateServiceIfNotExistAndSendStartCommandAndBind() {
+        Intent serviceIntent = new Intent(this, Service_A.class);
+        startService(serviceIntent);
+        mConnection = createConnection();
+        bindService(serviceIntent, mConnection, Context.BIND_AUTO_CREATE);
+        mShouldServiceExisting = true;
+    }
+
+    private void killService() {
+        if (mConnection != null) {
+            unbindService(mConnection);
+            Intent serviceIntent = new Intent(this, Service_A.class);
+            stopService(serviceIntent);
+        }
+        turnDefaultCondition();
+    }
+
     //
     // Button Listener
     //
 
+    public void onConnectServiceClick(View view) {
+        Log.d(TAG, "onConnectServiceClick: start");
+        generateServiceIfNotExistAndSendStartCommandAndBind();
+    }
+
     public void onStartTimerClick(View view) {
         Log.d(TAG, "onStartTimerClick: start");
-        if (mITimerService != null) {
+        if (mTimerService != null) {
             try {
-                mITimerService.startTimer();
+                mTimerService.startTimer();
                 mStartTimerButton.setEnabled(false);
                 mStopTimerButton.setEnabled(true);
             } catch (RemoteException e) {
@@ -115,9 +147,9 @@ public class ServiceDemo_A extends AppCompatActivity {
 
     public void onStopTimerClick(View view) {
         Log.d(TAG, "onStopTimerClick: start");
-        if (mITimerService != null) {
+        if (mTimerService != null) {
             try {
-                mITimerService.stopTimer();
+                mTimerService.stopTimer();
                 mStartTimerButton.setEnabled(true);
                 mStopTimerButton.setEnabled(false);
             } catch (RemoteException e) {
@@ -126,37 +158,55 @@ public class ServiceDemo_A extends AppCompatActivity {
         }
     }
 
+    public void onDisconnectServiceClick(View view) {
+        Log.d(TAG, "onDisconnectServiceClick: start");
+        killService();
+    }
+
     //
     // Service
     //
 
-    ITimerService mITimerService;
-    private ServiceConnection mConnection = new ServiceConnection() {
-        // Called when the connection with the service is established
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            Log.d(TAG, "onServiceConnected: start");
-            mITimerService = ITimerService.Stub.asInterface(service);
-            try {
-                mITimerService.registerCallback(mCallback);
-                if (mITimerService.isTimerRunning()) {
-                    mStartTimerButton.setEnabled(false);
-                    mStopTimerButton.setEnabled(true);
-                } else {
-                    mStartTimerButton.setEnabled(true);
-                    mStopTimerButton.setEnabled(false);
+    private ServiceConnection createConnection() {
+        return new ServiceConnection() {
+            // Called when the connection with the service is established
+            public void onServiceConnected(ComponentName className, IBinder service) {
+                Log.d(TAG, "onServiceConnected: start");
+                mTimerService = ITimerService.Stub.asInterface(service);
+                try {
+                    mTimerService.registerCallback(mCallback);
+                    if (mTimerService.isTimerRunning()) {
+                        mStartTimerButton.setEnabled(false);
+                        mStopTimerButton.setEnabled(true);
+                    } else {
+                        mStartTimerButton.setEnabled(true);
+                        mStopTimerButton.setEnabled(false);
+                    }
+                    mConnectServiceButton.setEnabled(false);
+                    mDisconnectServiceButton.setEnabled(true);
+                    mTimerText.setText(String.valueOf(mTimerService.getLatestValue()));
+                } catch (RemoteException e) {
+                    e.printStackTrace();
                 }
-                mTimerText.setText(String.valueOf(mITimerService.getLatestValue()));
-            } catch (RemoteException e) {
-                e.printStackTrace();
             }
-        }
 
-        // Called when the connection with the service disconnects unexpectedly
-        public void onServiceDisconnected(ComponentName className) {
-            Log.d(TAG, "onServiceDisconnected: start");
-            mITimerService = null;
-        }
-    };
+            // Called when the connection with the service disconnects unexpectedly
+            public void onServiceDisconnected(ComponentName className) {
+                Log.d(TAG, "onServiceDisconnected: start");
+                turnDefaultCondition();
+            }
+        };
+    }
+
+    private void turnDefaultCondition() {
+        mShouldServiceExisting = false;
+        mConnection = null;
+        mTimerService = null;
+        mConnectServiceButton.setEnabled(true);
+        mDisconnectServiceButton.setEnabled(false);
+        mStartTimerButton.setEnabled(false);
+        mStopTimerButton.setEnabled(false);
+    }
 
     ITimerServiceCallback mCallback = new ITimerServiceCallback.Stub() {
         @Override
