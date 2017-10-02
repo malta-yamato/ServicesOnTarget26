@@ -27,8 +27,6 @@ import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import jp.malta_yamto.servicesontarget26.AppFiles;
 import jp.malta_yamto.servicesontarget26.aidl.ITimerService;
@@ -77,6 +75,7 @@ public class Service_A extends Service {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putLong(PREF_KEY_TIME_ON_CREATE, System.currentTimeMillis());
         editor.putLong(PREF_KEY_TIME_ON_DESTROY, -1L);
+        editor.putInt(PREF_KEY_TIMER_EXPERIENCE, 0);
         editor.apply();
     }
 
@@ -96,7 +95,9 @@ public class Service_A extends Service {
     @Override
     public boolean onUnbind(Intent intent) {
         Log.d(TAG, "onUnbind: start");
-        mCallback = null;
+        synchronized (this) {
+            mCallback = null;
+        }
         return super.onUnbind(intent);
     }
 
@@ -119,55 +120,11 @@ public class Service_A extends Service {
     private CountUpTimer mTimer;
     private int mLastValue = 0;
 
-    private class CountUpTimer extends Timer {
-        int value;
-
-        CountUpTimer(int value) {
-            this.value = value;
-        }
-
-        void startTimer(long delay, long period) {
-            schedule(new Task(), delay, period);
-        }
-
-        int stopTimer() {
-            cancel();
-            return value;
-        }
-
-        private class Task extends TimerTask {
-            @Override
-            public void run() {
-                Log.d(TAG, "TimerTask run: value = " + value);
-
-                value += 1;
-
-                if (value % 100 == 0) {
-                    SharedPreferences.Editor editor =
-                            AppFiles.getSharedPreferences(Service_A.this).edit();
-                    editor.putInt(PREF_KEY_TIMER_EXPERIENCE, value / 100);
-                    editor.apply();
-                }
-
-                if (mCallback == null) {
-                    return;
-                }
-                try {
-                    mCallback.onCountUp(value);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                } catch (NullPointerException ignore) {
-                }
-
-            }
-        }
-
-    }
-
     private synchronized void startTimerService() {
         Log.d(TAG, "startTimerService: start");
         if (mTimer == null) {
             mTimer = new CountUpTimer(mLastValue);
+            mTimer.setCallback(mTimerCallback);
             mTimer.startTimer(TIMER_DELAY_MILLISEC, TIMER_PERIOD_MILLISEC);
         }
     }
@@ -180,6 +137,30 @@ public class Service_A extends Service {
         }
     }
 
+    private CountUpTimer.Callback mTimerCallback = new CountUpTimer.Callback() {
+        @Override
+        public void onCountUp(int value) {
+            Log.d(TAG, "onCountUp: mValue = " + value);
+
+            // callback for client.
+            if (mCallback != null) {
+                try {
+                    mCallback.onCountUp(value);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            // if value is 100, write timer experience.
+            if (value % 100 == 0) {
+                SharedPreferences.Editor editor =
+                        AppFiles.getSharedPreferences(Service_A.this).edit();
+                editor.putInt(PREF_KEY_TIMER_EXPERIENCE, value / 100);
+                editor.apply();
+            }
+        }
+    };
+
     //
     // Service Stub
     //
@@ -190,13 +171,17 @@ public class Service_A extends Service {
         @Override
         public void registerCallback(ITimerServiceCallback callback) throws RemoteException {
             Log.d(TAG, "registerCallback: start");
-            mCallback = callback;
+            synchronized (this) {
+                mCallback = callback;
+            }
         }
 
         @Override
         public void unregisterCallback(ITimerServiceCallback callback) throws RemoteException {
             Log.d(TAG, "unregisterCallback: start");
-            mCallback = null;
+            synchronized (this) {
+                mCallback = null;
+            }
         }
 
         @Override
@@ -225,7 +210,7 @@ public class Service_A extends Service {
         public int getLatestValue() throws RemoteException {
             synchronized (this) {
                 if (mTimer != null) {
-                    return mTimer.value;
+                    return mTimer.getValue();
                 } else {
                     return mLastValue;
                 }
