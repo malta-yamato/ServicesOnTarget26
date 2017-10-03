@@ -22,6 +22,7 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -29,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import jp.malta_yamto.servicesontarget26.AppFiles;
+import jp.malta_yamto.servicesontarget26.NotificationHelper;
 import jp.malta_yamto.servicesontarget26.aidl.ITimerService;
 import jp.malta_yamto.servicesontarget26.aidl.ITimerServiceCallback;
 
@@ -44,35 +46,26 @@ public class Service_A extends Service {
     public static final long TIMER_DELAY_MILLISEC = 1000L;
     public static final long TIMER_PERIOD_MILLISEC = 1000L;
 
+    private NotificationHelper mNotificationHelper;
+
     @Override
     public void onCreate() {
         Log.d(TAG, "onCreate: start");
         super.onCreate();
 
-        // last results
+        // notification helper
+        mNotificationHelper = new NotificationHelper(this);
+
+        // check previous termination time
         SharedPreferences prefs = AppFiles.getSharedPreferences(this);
-        long timeOnCreate = prefs.getLong(PREF_KEY_TIME_ON_CREATE, INVALID_TIME);
         long timeOnDestroy = prefs.getLong(PREF_KEY_TIME_ON_DESTROY, INVALID_TIME);
-        int timerExperience = prefs.getInt(PREF_KEY_TIMER_EXPERIENCE, 0);
-        if (timeOnCreate != INVALID_TIME) {
-            String descTimeOnCreate = "onCreate: " +
-                    SimpleDateFormat.getDateTimeInstance().format(new Date(timeOnCreate));
-            String descTimeOnDestroy;
-            if (timeOnDestroy != INVALID_TIME) {
-                descTimeOnDestroy = "onDestroy: " +
-                        SimpleDateFormat.getDateTimeInstance().format(new Date(timeOnDestroy));
-            } else {
-                descTimeOnDestroy = "onDestroy: unknown";
-            }
-            String descTimerExperience = "Timer EXP: " + String.valueOf(timerExperience);
-            String descToast =
-                    "last results\n" + descTimeOnCreate + "\n" + descTimeOnDestroy + "\n" +
-                            descTimerExperience;
-            Toast.makeText(this, descToast, Toast.LENGTH_LONG).show();
+        if (timeOnDestroy == INVALID_TIME) {
+            Toast.makeText(this, "previous service might have been killed abnormally.",
+                    Toast.LENGTH_LONG).show();
         }
 
-        // write current time to preferences.
-        SharedPreferences.Editor editor = prefs.edit();
+        // write current time in preferences.
+        SharedPreferences.Editor editor = AppFiles.getSharedPreferences(this, getClass()).edit();
         editor.putLong(PREF_KEY_TIME_ON_CREATE, System.currentTimeMillis());
         editor.putLong(PREF_KEY_TIME_ON_DESTROY, -1L);
         editor.putInt(PREF_KEY_TIMER_EXPERIENCE, 0);
@@ -105,12 +98,39 @@ public class Service_A extends Service {
     public void onDestroy() {
         Log.d(TAG, "onDestroy: start");
         super.onDestroy();
-        //
+
+        // release resources ...
         stopTimerService();
-        // write current time to preferences.
+
+        // write current time in preferences.
         SharedPreferences.Editor editor = AppFiles.getSharedPreferences(this, getClass()).edit();
         editor.putLong(PREF_KEY_TIME_ON_DESTROY, System.currentTimeMillis());
         editor.apply();
+
+        // last results
+        SharedPreferences prefs = AppFiles.getSharedPreferences(this);
+        long timeOnCreate = prefs.getLong(PREF_KEY_TIME_ON_CREATE, INVALID_TIME);
+        long timeOnDestroy = prefs.getLong(PREF_KEY_TIME_ON_DESTROY, INVALID_TIME);
+        int timerExperience = prefs.getInt(PREF_KEY_TIMER_EXPERIENCE, 0);
+
+        String descTimeOnCreate = "unknown";
+        if (timeOnCreate != INVALID_TIME) {
+            descTimeOnCreate =
+                    SimpleDateFormat.getDateTimeInstance().format(new Date(timeOnCreate));
+        }
+        String descTimeOnDestroy = "unknown";
+        if (timeOnDestroy != INVALID_TIME) {
+            descTimeOnDestroy =
+                    SimpleDateFormat.getDateTimeInstance().format(new Date(timeOnDestroy));
+        }
+        String descTimerExperience = "EXP: " + String.valueOf(timerExperience);
+        String descNotification =
+                descTimeOnCreate + " -> " + descTimeOnDestroy + " " + descTimerExperience;
+
+        // last notification
+        NotificationCompat.Builder builder =
+                mNotificationHelper.getNotification("Timer Service results", descNotification);
+        mNotificationHelper.notify(100, builder);
     }
 
     //

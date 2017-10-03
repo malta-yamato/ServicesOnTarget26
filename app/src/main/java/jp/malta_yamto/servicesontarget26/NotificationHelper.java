@@ -29,7 +29,7 @@ import android.support.v4.app.NotificationManagerCompat;
 /**
  * Helper class to manage notification channels, and create notifications.
  */
-class NotificationHelper extends ContextWrapper {
+public class NotificationHelper extends ContextWrapper {
 
     public static final String PRIMARY_CHANNEL = "primary";
     public static final String SECONDARY_CHANNEL = "secondary";
