@@ -115,21 +115,20 @@ public class Service_A extends Service {
 
         String descTimeOnCreate = "unknown";
         if (timeOnCreate != INVALID_TIME) {
-            descTimeOnCreate =
+            descTimeOnCreate = "Service start: " +
                     SimpleDateFormat.getDateTimeInstance().format(new Date(timeOnCreate));
         }
         String descTimeOnDestroy = "unknown";
         if (timeOnDestroy != INVALID_TIME) {
-            descTimeOnDestroy =
+            descTimeOnDestroy = "Service end: " +
                     SimpleDateFormat.getDateTimeInstance().format(new Date(timeOnDestroy));
         }
-        String descTimerExperience = "EXP: " + String.valueOf(timerExperience);
-        String descNotification =
-                descTimeOnCreate + " -> " + descTimeOnDestroy + " " + descTimerExperience;
+        String descTimerExperience = "Timer Experience: " + String.valueOf(timerExperience);
 
         // last notification
+        String[] lines = new String[]{descTimeOnCreate, descTimeOnDestroy, descTimerExperience};
         NotificationCompat.Builder builder =
-                mNotificationHelper.getNotification("Timer Service results", descNotification);
+                mNotificationHelper.getNotification("Timer Service results", "Summary", lines);
         mNotificationHelper.notify(100, builder);
     }
 

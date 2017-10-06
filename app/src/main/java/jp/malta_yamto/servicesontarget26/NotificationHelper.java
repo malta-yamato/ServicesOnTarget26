@@ -60,10 +60,23 @@ public class NotificationHelper extends ContextWrapper {
         }
     }
 
+    @SuppressWarnings("unused")
     public NotificationCompat.Builder getNotification(String title, String body) {
         return new NotificationCompat.Builder(getApplicationContext(), PRIMARY_CHANNEL)
                 .setContentTitle(title).setContentText(body).setSmallIcon(getSmallIcon())
                 .setAutoCancel(true);
+    }
+
+    @SuppressWarnings("unused")
+    public NotificationCompat.Builder getNotification(String title, String subject,
+            String[] lines) {
+        NotificationCompat.InboxStyle style = new NotificationCompat.InboxStyle();
+        for (int i = 0; i < lines.length; i++) {
+            style.addLine(lines[i]);
+        }
+        return new NotificationCompat.Builder(getApplicationContext(), PRIMARY_CHANNEL)
+                .setContentTitle(title).setContentText(subject).setStyle(style)
+                .setSmallIcon(getSmallIcon()).setAutoCancel(true);
     }
 
     @SuppressWarnings("unused")
