@@ -34,7 +34,7 @@ import jp.malta_yamto.servicesontarget26.NotificationHelper;
 import jp.malta_yamto.servicesontarget26.aidl.ITimerService;
 import jp.malta_yamto.servicesontarget26.aidl.ITimerServiceCallback;
 
-public class Service_A extends Service {
+public class TimerService extends Service {
     private static final String TAG = "Service_A";
 
     public static final long INVALID_TIME = -1L;
@@ -173,7 +173,7 @@ public class Service_A extends Service {
             // if value is 100, write timer experience.
             if (value % 100 == 0) {
                 SharedPreferences.Editor editor =
-                        AppFiles.getSharedPreferences(Service_A.this).edit();
+                        AppFiles.getSharedPreferences(TimerService.this).edit();
                 editor.putInt(PREF_KEY_TIMER_EXPERIENCE, value / 100);
                 editor.apply();
             }

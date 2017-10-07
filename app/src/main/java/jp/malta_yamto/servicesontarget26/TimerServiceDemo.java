@@ -32,9 +32,9 @@ import android.widget.TextView;
 
 import jp.malta_yamto.servicesontarget26.aidl.ITimerService;
 import jp.malta_yamto.servicesontarget26.aidl.ITimerServiceCallback;
-import jp.malta_yamto.servicesontarget26.service.Service_A;
+import jp.malta_yamto.servicesontarget26.service.TimerService;
 
-public class ServiceDemo_A extends AppCompatActivity {
+public class TimerServiceDemo extends AppCompatActivity {
     private static final String TAG = "ServiceDemo_A";
 
     private Handler mHandler = new Handler();
@@ -54,7 +54,7 @@ public class ServiceDemo_A extends AppCompatActivity {
         Log.d(TAG, "onCreate: start");
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.demo_a_main);
+        setContentView(R.layout.activity_timer_service_demo_main);
         mTimerText = findViewById(R.id.text_timer);
         mConnectServiceButton = findViewById(R.id.button_connect_service);
         mDisconnectServiceButton = findViewById(R.id.button_disconnect_service);
@@ -107,7 +107,7 @@ public class ServiceDemo_A extends AppCompatActivity {
     }
 
     private void generateServiceIfNotExistAndSendStartCommandAndBind() {
-        Intent serviceIntent = new Intent(this, Service_A.class);
+        Intent serviceIntent = new Intent(this, TimerService.class);
         startService(serviceIntent);
         mConnection = createConnection();
         bindService(serviceIntent, mConnection, Context.BIND_AUTO_CREATE);
@@ -117,7 +117,7 @@ public class ServiceDemo_A extends AppCompatActivity {
     private void killService() {
         if (mConnection != null) {
             unbindService(mConnection);
-            Intent serviceIntent = new Intent(this, Service_A.class);
+            Intent serviceIntent = new Intent(this, TimerService.class);
             stopService(serviceIntent);
         }
         turnDefaultCondition();

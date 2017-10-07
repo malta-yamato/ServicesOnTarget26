@@ -18,11 +18,11 @@
         </activity>
 
         <activity
-            android:name=".ServiceDemo_A"
+            android:name=".TimerServiceDemo"
             android:label="Demo A"/>
 
         <service
-            android:name=".service.Service_A"
+            android:name=".service.TimerService"
             android:process=":service_a"/>
 
     </application>
