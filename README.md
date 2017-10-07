@@ -1,0 +1,1 @@
+Background services will be restricted on the applications targeting SDK 26 with Android Oreo. Here we are conducting a simple test of converting to Foreground and testing other new APIs.
