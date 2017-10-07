@@ -46,7 +46,7 @@ public class TimerService extends Service {
     public static final long TIMER_DELAY_MILLISEC = 1000L;
     public static final long TIMER_PERIOD_MILLISEC = 1000L;
 
-    private NotificationHelper mNotificationHelper;
+    protected NotificationHelper mNotificationHelper;
 
     @Override
     public void onCreate() {
@@ -127,9 +127,10 @@ public class TimerService extends Service {
 
         // last notification
         String[] lines = new String[]{descTimeOnCreate, descTimeOnDestroy, descTimerExperience};
-        NotificationCompat.Builder builder =
-                mNotificationHelper.getNotification("Timer Service results", "Summary", lines);
-        mNotificationHelper.notify(100, builder);
+        NotificationCompat.Builder builder = mNotificationHelper
+                .getNotification(NotificationHelper.DEFAULT_CHANNEL, "Timer Service results",
+                        "Summary", lines);
+        mNotificationHelper.notify(NotificationHelper.ID_TIMER_RESULT, builder);
     }
 
     //

@@ -2,4 +2,5 @@
     <string name="app_name">ServicesOnTarget26</string>
     <string name="noti_primary_channel">Primary Channel</string>
     <string name="noti_secondary_channel">Secondary Channel</string>
+    <string name="noti_foreground_service_channel">Foreground Service Channel</string>
 </resources>

@@ -31,8 +31,11 @@ import android.support.v4.app.NotificationManagerCompat;
  */
 public class NotificationHelper extends ContextWrapper {
 
-    public static final String PRIMARY_CHANNEL = "primary";
-    public static final String SECONDARY_CHANNEL = "secondary";
+    public static int ID_FOREGROUND_TIMER_SERVICE = 1;
+    public static int ID_TIMER_RESULT = 100;
+
+    public static final String DEFAULT_CHANNEL = "primary";
+    public static final String FOREGROUND_SERVICE_CHANNEL = "foreground_service";
 
     private NotificationManagerCompat mManager;
 
@@ -43,47 +46,41 @@ public class NotificationHelper extends ContextWrapper {
             NotificationManager manager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-            // primary channel
-            NotificationChannel primaryChannel = new NotificationChannel(PRIMARY_CHANNEL,
+            // default channel
+            NotificationChannel primaryChannel = new NotificationChannel(DEFAULT_CHANNEL,
                     getString(R.string.noti_primary_channel), NotificationManager.IMPORTANCE_HIGH);
             primaryChannel.setLightColor(Color.RED);
             primaryChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
             manager.createNotificationChannel(primaryChannel);
 
-            // secondary channel
-            NotificationChannel secondaryChannel = new NotificationChannel(SECONDARY_CHANNEL,
-                    getString(R.string.noti_secondary_channel),
-                    NotificationManager.IMPORTANCE_DEFAULT);
-            secondaryChannel.setLightColor(Color.GREEN);
-            secondaryChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
-            manager.createNotificationChannel(secondaryChannel);
+            // foreground service channel
+            NotificationChannel foregroundServiceChannel =
+                    new NotificationChannel(FOREGROUND_SERVICE_CHANNEL,
+                            getString(R.string.noti_foreground_service_channel),
+                            NotificationManager.IMPORTANCE_LOW);
+            foregroundServiceChannel.setLightColor(Color.GREEN);
+            foregroundServiceChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+            manager.createNotificationChannel(foregroundServiceChannel);
         }
     }
 
     @SuppressWarnings("unused")
-    public NotificationCompat.Builder getNotification(String title, String body) {
-        return new NotificationCompat.Builder(getApplicationContext(), PRIMARY_CHANNEL)
+    public NotificationCompat.Builder getNotification(String channelId, String title, String body) {
+        return new NotificationCompat.Builder(getApplicationContext(), channelId)
                 .setContentTitle(title).setContentText(body).setSmallIcon(getSmallIcon())
                 .setAutoCancel(true);
     }
 
     @SuppressWarnings("unused")
-    public NotificationCompat.Builder getNotification(String title, String subject,
-            String[] lines) {
+    public NotificationCompat.Builder getNotification(String channelId, String title,
+            String subject, String[] lines) {
         NotificationCompat.InboxStyle style = new NotificationCompat.InboxStyle();
         for (int i = 0; i < lines.length; i++) {
             style.addLine(lines[i]);
         }
-        return new NotificationCompat.Builder(getApplicationContext(), PRIMARY_CHANNEL)
+        return new NotificationCompat.Builder(getApplicationContext(), channelId)
                 .setContentTitle(title).setContentText(subject).setStyle(style)
                 .setSmallIcon(getSmallIcon()).setAutoCancel(true);
-    }
-
-    @SuppressWarnings("unused")
-    public NotificationCompat.Builder getSecondaryNotification(String title, String body) {
-        return new NotificationCompat.Builder(getApplicationContext(), SECONDARY_CHANNEL)
-                .setContentTitle(title).setContentText(body).setSmallIcon(getSmallIcon())
-                .setAutoCancel(true);
     }
 
     public void notify(int id, NotificationCompat.Builder notification) {
