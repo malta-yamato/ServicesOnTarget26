@@ -34,7 +34,7 @@ public class NotificationHelper extends ContextWrapper {
     public static int ID_FOREGROUND_TIMER_SERVICE = 1;
     public static int ID_TIMER_RESULT = 100;
 
-    public static final String DEFAULT_CHANNEL = "primary";
+    public static final String DEFAULT_CHANNEL = "default";
     public static final String FOREGROUND_SERVICE_CHANNEL = "foreground_service";
 
     private NotificationManagerCompat mManager;

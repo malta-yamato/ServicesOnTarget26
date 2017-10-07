@@ -40,8 +40,8 @@ public class TimerServiceDemo extends AppCompatActivity {
     private Handler mHandler = new Handler();
 
     ITimerService mTimerService;
-    private ServiceConnection mConnection = null;
-    private boolean mShouldServiceExisting = false;
+    protected ServiceConnection mConnection = null;
+    protected boolean mShouldServiceExisting = false;
 
     private TextView mTimerText;
     private Button mConnectServiceButton;
@@ -106,7 +106,7 @@ public class TimerServiceDemo extends AppCompatActivity {
         super.onDestroy();
     }
 
-    private void generateServiceIfNotExistAndSendStartCommandAndBind() {
+    protected void generateServiceIfNotExistAndSendStartCommandAndBind() {
         Intent serviceIntent = new Intent(this, TimerService.class);
         startService(serviceIntent);
         mConnection = createConnection();
@@ -114,7 +114,7 @@ public class TimerServiceDemo extends AppCompatActivity {
         mShouldServiceExisting = true;
     }
 
-    private void killService() {
+    protected void killService() {
         if (mConnection != null) {
             unbindService(mConnection);
             Intent serviceIntent = new Intent(this, TimerService.class);
@@ -167,7 +167,7 @@ public class TimerServiceDemo extends AppCompatActivity {
     // Service
     //
 
-    private ServiceConnection createConnection() {
+    protected ServiceConnection createConnection() {
         return new ServiceConnection() {
             // Called when the connection with the service is established
             public void onServiceConnected(ComponentName className, IBinder service) {
@@ -198,7 +198,7 @@ public class TimerServiceDemo extends AppCompatActivity {
         };
     }
 
-    private void turnDefaultCondition() {
+    protected void turnDefaultCondition() {
         mShouldServiceExisting = false;
         mConnection = null;
         mTimerService = null;

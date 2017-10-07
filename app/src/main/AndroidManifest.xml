@@ -21,6 +21,10 @@
             android:name=".TimerServiceDemo"
             android:label="TimerServiceDemo"/>
 
+        <activity
+            android:name=".ForegroundTimerServiceDemo"
+            android:label="ForegroundTimerServiceDemo"/>
+
         <service
             android:name=".service.TimerService"
             android:process=":timer_service"/>
