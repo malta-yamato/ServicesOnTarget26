@@ -35,7 +35,8 @@ import jp.malta_yamto.servicesontarget26.aidl.ITimerService;
 import jp.malta_yamto.servicesontarget26.aidl.ITimerServiceCallback;
 
 public class TimerService extends Service {
-    private static final String TAG = "Service_A";
+    @SuppressWarnings("unused")
+    private static final String TAG = "TimerService";
 
     public static final long INVALID_TIME = -1L;
 

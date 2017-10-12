@@ -35,7 +35,8 @@ import jp.malta_yamto.servicesontarget26.aidl.ITimerServiceCallback;
 import jp.malta_yamto.servicesontarget26.service.TimerService;
 
 public class TimerServiceDemo extends AppCompatActivity {
-    private static final String TAG = "ServiceDemo_A";
+    @SuppressWarnings("unused")
+    private static final String TAG = "TimerServiceDemo";
 
     private Handler mHandler = new Handler();
 

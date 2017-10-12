@@ -25,6 +25,10 @@
             android:name=".ForegroundTimerServiceDemo"
             android:label="ForegroundTimerServiceDemo"/>
 
+        <activity
+            android:name=".LocalTimerServiceDemo"
+            android:label="LocalTimerServiceDemo"/>
+
         <service
             android:name=".service.TimerService"
             android:process=":timer_service"/>
@@ -32,6 +36,8 @@
         <service
             android:name=".service.ForegroundTimerService"
             android:process=":foreground_timer_service"/>
+
+        <service android:name=".service.LocalTimerService"/>
 
     </application>
 

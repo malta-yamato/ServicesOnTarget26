@@ -18,20 +18,15 @@ package jp.malta_yamto.servicesontarget26;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 
-import jp.malta_yamto.servicesontarget26.service.ForegroundTimerService;
+import jp.malta_yamto.servicesontarget26.service.LocalTimerService;
 
-public class ForegroundTimerServiceDemo extends TimerServiceDemo {
+public class LocalTimerServiceDemo extends TimerServiceDemo {
 
     @Override
     protected void generateServiceIfNotExistAndSendStartCommandAndBind() {
-        Intent serviceIntent = new Intent(this, ForegroundTimerService.class);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            startService(serviceIntent);
-        } else {
-            startForegroundService(serviceIntent);
-        }
+        Intent serviceIntent = new Intent(this, LocalTimerService.class);
+        startService(serviceIntent);
         mConnection = createConnection();
         bindService(serviceIntent, mConnection, Context.BIND_AUTO_CREATE);
         mShouldServiceExisting = true;
@@ -41,7 +36,7 @@ public class ForegroundTimerServiceDemo extends TimerServiceDemo {
     protected void killService() {
         if (mConnection != null) {
             unbindService(mConnection);
-            Intent serviceIntent = new Intent(this, ForegroundTimerService.class);
+            Intent serviceIntent = new Intent(this, LocalTimerService.class);
             stopService(serviceIntent);
         }
         turnDefaultCondition();
