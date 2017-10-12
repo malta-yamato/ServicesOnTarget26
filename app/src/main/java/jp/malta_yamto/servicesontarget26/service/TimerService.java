@@ -131,7 +131,7 @@ public class TimerService extends Service {
         NotificationCompat.Builder builder = mNotificationHelper
                 .getNotification(NotificationHelper.DEFAULT_CHANNEL, "Timer Service results",
                         "Summary", lines);
-        mNotificationHelper.notify(NotificationHelper.ID_TIMER_RESULT, builder);
+        mNotificationHelper.notifyTimerResult(getClass(), builder);
     }
 
     //

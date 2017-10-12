@@ -19,6 +19,7 @@ package jp.malta_yamto.servicesontarget26;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.Service;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Color;
@@ -26,13 +27,22 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
+import jp.malta_yamto.servicesontarget26.service.ForegroundLocalTimerService;
+import jp.malta_yamto.servicesontarget26.service.ForegroundTimerService;
+import jp.malta_yamto.servicesontarget26.service.LocalTimerService;
+
 /**
  * Helper class to manage notification channels, and create notifications.
  */
 public class NotificationHelper extends ContextWrapper {
 
     public static int ID_FOREGROUND_TIMER_SERVICE = 1;
+    public static int ID_FOREGROUND_LOCAL_TIMER_SERVICE = 3;
+
     public static int ID_TIMER_RESULT = 100;
+    public static int ID_TIMER_RESULT_FOREGROUND = 101;
+    public static int ID_TIMER_RESULT_LOCAL = 102;
+    public static int ID_TIMER_RESULT_FOREGROUND_LOCAL = 103;
 
     public static final String DEFAULT_CHANNEL = "default";
     public static final String FOREGROUND_SERVICE_CHANNEL = "foreground_service";
@@ -85,6 +95,22 @@ public class NotificationHelper extends ContextWrapper {
 
     public void notify(int id, NotificationCompat.Builder notification) {
         getManager().notify(id, notification.build());
+    }
+
+    public void notifyTimerResult(Class<? extends Service> clazz,
+            NotificationCompat.Builder notification) {
+        int id = ID_TIMER_RESULT;
+        if (clazz.equals(ForegroundTimerService.class)) {
+            id = ID_TIMER_RESULT_FOREGROUND;
+            notification.setContentTitle("Foreground Timer Service results");
+        } else if (clazz.equals(LocalTimerService.class)) {
+            id = ID_TIMER_RESULT_LOCAL;
+            notification.setContentTitle("Local Timer Service results");
+        } else if (clazz.equals(ForegroundLocalTimerService.class)) {
+            id = ID_TIMER_RESULT_FOREGROUND_LOCAL;
+            notification.setContentTitle("Foreground Local Timer Service results");
+        }
+        notify(id, notification);
     }
 
     private int getSmallIcon() {
