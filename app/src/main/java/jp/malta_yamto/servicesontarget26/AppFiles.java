@@ -1,6 +1,5 @@
 package jp.malta_yamto.servicesontarget26;
 
-import android.app.Service;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -13,33 +12,33 @@ public class AppFiles {
     private static final String TAG = "AppFiles";
 
     @SuppressWarnings("unused")
-    public static FileInputStream openFileInput(Context context, Class<? extends Service> clazz,
+    public static FileInputStream openFileInput(Context context, Class<? extends Context> clazz,
             String name) throws FileNotFoundException {
         return context.openFileInput(getCorrespondingName(clazz, name));
     }
 
     @SuppressWarnings("unused")
-    public static FileOutputStream openFileOutput(Context context, Class<? extends Service> clazz,
+    public static FileOutputStream openFileOutput(Context context, Class<? extends Context> clazz,
             String name, int mode) throws FileNotFoundException {
         return context.openFileOutput(getCorrespondingName(clazz, name), mode);
     }
 
     @SuppressWarnings("unused")
-    public static SharedPreferences getSharedPreferences(Service service) {
-        return getSharedPreferences(service, service.getClass());
+    public static SharedPreferences getSharedPreferences(Context context) {
+        return getSharedPreferences(context, context.getClass());
     }
 
     @SuppressWarnings("unused")
     public static SharedPreferences getSharedPreferences(Context context,
-            Class<? extends Service> clazz) {
+            Class<? extends Context> clazz) {
         return context.getSharedPreferences(getCorrespondingName(clazz), Context.MODE_PRIVATE);
     }
 
-    private static String getCorrespondingName(Class<? extends Service> clazz, String suffix) {
+    private static String getCorrespondingName(Class<? extends Context> clazz, String suffix) {
         return getCorrespondingName(clazz) + "." + suffix;
     }
 
-    private static String getCorrespondingName(Class<? extends Service> clazz) {
+    private static String getCorrespondingName(Class<? extends Context> clazz) {
         String className = clazz.getName();
         Log.d(TAG, "getCorrespondingName: className = " + className);
         return className;

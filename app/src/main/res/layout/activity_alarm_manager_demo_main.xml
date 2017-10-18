@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/textViewDescription"
+        android:id="@+id/text_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -19,7 +19,7 @@
         tools:ignore="HardcodedText"/>
 
     <EditText
-        android:id="@+id/editTextInterval"
+        android:id="@+id/edit_interval"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -31,40 +31,42 @@
         android:text="60"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewDescription"
+        app:layout_constraintTop_toBottomOf="@+id/text_description"
         tools:ignore="HardcodedText"/>
 
     <TextView
-        android:id="@+id/textViewUnit"
+        android:id="@+id/text_unit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:text="sec."
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:layout_constraintBaseline_toBaselineOf="@+id/editTextInterval"
-        app:layout_constraintStart_toEndOf="@+id/editTextInterval"
+        app:layout_constraintBaseline_toBaselineOf="@+id/edit_interval"
+        app:layout_constraintStart_toEndOf="@+id/edit_interval"
         tools:ignore="HardcodedText"/>
 
     <Button
-        android:id="@+id/buttonStartAlarm"
+        android:id="@+id/button_start_alarm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:onClick="onStartAlarmClick"
         android:text="Start Alarm"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textViewUnit"
-        app:layout_constraintStart_toEndOf="@+id/textViewUnit"
+        app:layout_constraintBaseline_toBaselineOf="@+id/text_unit"
+        app:layout_constraintStart_toEndOf="@+id/text_unit"
         tools:ignore="HardcodedText"/>
 
     <Button
-        android:id="@+id/buttonStopAlarm"
+        android:id="@+id/button_stop_alarm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:onClick="onStopAlarmClick"
         android:text="Stop Alarm"
-        app:layout_constraintBaseline_toBaselineOf="@+id/buttonStartAlarm"
-        app:layout_constraintStart_toEndOf="@+id/buttonStartAlarm"
+        app:layout_constraintBaseline_toBaselineOf="@+id/button_start_alarm"
+        app:layout_constraintStart_toEndOf="@+id/button_start_alarm"
         tools:ignore="HardcodedText"/>
 </android.support.constraint.ConstraintLayout>

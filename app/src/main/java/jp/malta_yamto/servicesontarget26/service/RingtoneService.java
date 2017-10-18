@@ -52,19 +52,23 @@ public class RingtoneService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
+        Log.d(TAG, "onHandleIntent: start");
         new Thread(new Runnable() {
             @Override
             public void run() {
+                Log.d(TAG, "run: start");
                 if (mWakeLock.isHeld()) {
                     Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
                     Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(), uri);
 
+                    Log.d(TAG, "run: ringtone play");
                     ringtone.play();
                     try {
                         Thread.sleep(3000L);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                    Log.d(TAG, "run: ringtone stop");
                     ringtone.stop();
                 }
             }
