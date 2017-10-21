@@ -39,6 +39,8 @@ public class NotificationHelper extends ContextWrapper {
     public static int ID_FOREGROUND_TIMER_SERVICE = 1;
     public static int ID_FOREGROUND_LOCAL_TIMER_SERVICE = 3;
 
+    public static int ID_FOREGROUND_DUMMY_SERVICE = 11;
+
     public static int ID_TIMER_RESULT = 100;
     public static int ID_TIMER_RESULT_FOREGROUND = 101;
     public static int ID_TIMER_RESULT_LOCAL = 102;

@@ -12,11 +12,10 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="TextView"
+        android:text="@string/msg_alarm_manager_demo"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="HardcodedText"/>
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <EditText
         android:id="@+id/edit_interval"
@@ -69,4 +68,30 @@
         app:layout_constraintBaseline_toBaselineOf="@+id/button_start_alarm"
         app:layout_constraintStart_toEndOf="@+id/button_start_alarm"
         tools:ignore="HardcodedText"/>
+
+    <Button
+        android:id="@+id/button_show_foreground"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="onShowForegroundClick"
+        android:text="Foreground"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_interval"
+        tools:ignore="HardcodedText"/>
+
+    <Button
+        android:id="@+id/button_dismiss_foreground"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:onClick="onDismissForegroundClick"
+        android:text="Background"
+        app:layout_constraintBaseline_toBaselineOf="@+id/button_show_foreground"
+        app:layout_constraintStart_toEndOf="@+id/button_show_foreground"
+        tools:ignore="HardcodedText"/>
+
 </android.support.constraint.ConstraintLayout>

@@ -22,6 +22,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -31,6 +32,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import jp.malta_yamto.servicesontarget26.service.ForegroundDummyService;
 import jp.malta_yamto.servicesontarget26.service.RingtoneService;
 
 public class AlarmManagerDemo extends AppCompatActivity {
@@ -129,6 +131,16 @@ public class AlarmManagerDemo extends AppCompatActivity {
         return PendingIntent.getService(this, 0, intent, 0);
     }
 
+    private void scheduleSetAlarm() {
+        Log.d(TAG, "scheduleSetAlarm: ");
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                setAlarmInternal();
+            }
+        });
+    }
+
     //
     // Button Listener
     //
@@ -147,14 +159,18 @@ public class AlarmManagerDemo extends AppCompatActivity {
         scheduleSetAlarm();
     }
 
-    private void scheduleSetAlarm() {
-        Log.d(TAG, "scheduleSetAlarm: ");
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                setAlarmInternal();
-            }
-        });
+    public void onShowForegroundClick(View view) {
+        Intent serviceIntent = new Intent(this, ForegroundDummyService.class);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            startService(serviceIntent);
+        } else {
+            startForegroundService(serviceIntent);
+        }
+    }
+
+    public void onDismissForegroundClick(View view) {
+        Intent serviceIntent = new Intent(this, ForegroundDummyService.class);
+        stopService(serviceIntent);
     }
 
 }
