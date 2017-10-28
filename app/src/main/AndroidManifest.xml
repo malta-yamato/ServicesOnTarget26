@@ -39,6 +39,10 @@
             android:name=".AlarmManagerDemo"
             android:label="AlarmManagerDemo"/>
 
+        <activity
+            android:name=".JobSchedulerDemo"
+            android:label="JobSchedulerDemo"/>
+
         <service
             android:name=".service.TimerService"
             android:process=":timer_service"/>

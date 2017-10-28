@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/text_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/msg_job_scheduler_demo"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <EditText
+        android:id="@+id/edit_interval"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:ems="3"
+        android:gravity="end"
+        android:inputType="numberDecimal"
+        android:text="900"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_description"
+        tools:ignore="HardcodedText"/>
+
+    <TextView
+        android:id="@+id/text_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="sec."
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintBaseline_toBaselineOf="@+id/edit_interval"
+        app:layout_constraintStart_toEndOf="@+id/edit_interval"
+        tools:ignore="HardcodedText"/>
+
+    <Button
+        android:id="@+id/button_start_job"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:onClick="onStartJobClick"
+        android:text="Start Job"
+        app:layout_constraintBaseline_toBaselineOf="@+id/text_unit"
+        app:layout_constraintStart_toEndOf="@+id/text_unit"
+        tools:ignore="HardcodedText"/>
+
+    <Button
+        android:id="@+id/button_stop_job"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:onClick="onStopJobClick"
+        android:text="Stop Job"
+        app:layout_constraintBaseline_toBaselineOf="@+id/button_start_job"
+        app:layout_constraintStart_toEndOf="@+id/button_start_job"
+        tools:ignore="HardcodedText"/>
+
+    <Button
+        android:id="@+id/button_show_foreground"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="onShowForegroundClick"
+        android:text="Foreground"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_interval"
+        tools:ignore="HardcodedText"/>
+
+    <Button
+        android:id="@+id/button_dismiss_foreground"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:onClick="onDismissForegroundClick"
+        android:text="Background"
+        android:visibility="gone"
+        app:layout_constraintBaseline_toBaselineOf="@+id/button_show_foreground"
+        app:layout_constraintStart_toEndOf="@+id/button_show_foreground"
+        tools:ignore="HardcodedText"/>
+
+</android.support.constraint.ConstraintLayout>

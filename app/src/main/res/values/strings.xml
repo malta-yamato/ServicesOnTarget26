@@ -4,4 +4,5 @@
     <string name="noti_secondary_channel">Secondary Channel</string>
     <string name="noti_foreground_service_channel">Foreground Service Channel</string>
     <string name="msg_alarm_manager_demo">Please turn on the device volume to perform this demonstration. The alarm doesn\'t fire very exactly. On Android Oreo, you need to activate the dummy foreground service. You also need to add this app to the whitelist to avoid Doze mode.</string>
+    <string name="msg_job_scheduler_demo">Please turn on the device volume to perform this demonstration. If you use the job scheduler, you can avoid the background restriction in Android Oreo and maybe Doze mode. But the repeat interval seems to be limited to the interval obtained by JobInfo.getMinPeriodMillis ().</string>
 </resources>
