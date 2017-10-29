@@ -131,6 +131,7 @@ public class JobDispatcherDemo extends AppCompatActivity {
         mStopJobButton.setEnabled(false);
     }
 
+    @SuppressWarnings("unused")
     private void scheduleSetJob() {
         Log.d(TAG, "scheduleSetJob: ");
         mHandler.post(new Runnable() {
@@ -169,15 +170,17 @@ public class JobDispatcherDemo extends AppCompatActivity {
     @SuppressLint("ApplySharedPref")
     public void onStartJobClick(View view) {
         Log.d(TAG, "onStartJobClick: ");
-        mSharedPreferences.edit().putInt(PREFS_KEY_JOB_TRIG, JOB_TRIG_START).commit();
-        scheduleSetJob();
+        if (mSharedPreferences.edit().putInt(PREFS_KEY_JOB_TRIG, JOB_TRIG_START).commit()) {
+            startJobInternal();
+        }
     }
 
     @SuppressLint("ApplySharedPref")
     public void onStopJobClick(View view) {
         Log.d(TAG, "onStopJobClick: start");
-        mSharedPreferences.edit().putInt(PREFS_KEY_JOB_TRIG, JOB_TRIG_STOP).commit();
-        scheduleSetJob();
+        if (mSharedPreferences.edit().putInt(PREFS_KEY_JOB_TRIG, JOB_TRIG_STOP).commit()) {
+            stopJobInternal();
+        }
     }
 
     public void onShowForegroundClick(View view) {

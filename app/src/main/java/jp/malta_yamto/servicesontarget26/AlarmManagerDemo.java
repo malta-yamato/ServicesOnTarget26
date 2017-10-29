@@ -26,6 +26,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -96,7 +97,7 @@ public class AlarmManagerDemo extends AppCompatActivity {
     //
     private void setAlarmInternal() {
         Log.d(TAG, "setAlarmInternal: ");
-        long alarmTrig = mSharedPreferences.getInt(PREFS_KEY_ALARM_TRIG, ALARM_TRIG_UNKNOWN);
+        int alarmTrig = mSharedPreferences.getInt(PREFS_KEY_ALARM_TRIG, ALARM_TRIG_UNKNOWN);
         if (alarmTrig == ALARM_TRIG_START) {
             startAlarmInternal();
         } else if (alarmTrig == ALARM_TRIG_STOP) {
@@ -112,16 +113,15 @@ public class AlarmManagerDemo extends AppCompatActivity {
         } catch (Exception e) {
             interval = 60 * 1000L;
         }
-        ((AlarmManager) getSystemService(Context.ALARM_SERVICE))
-                .setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                        SystemClock.elapsedRealtime() + interval, interval, getPendingIntent());
+        getAlarmManager().setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                SystemClock.elapsedRealtime() + interval, interval, getPendingIntent());
         mStartAlarmButton.setEnabled(false);
         mStopAlarmButton.setEnabled(true);
     }
 
     private void stopAlarmInternal() {
         Log.d(TAG, "stopAlarmInternal: start");
-        ((AlarmManager) getSystemService(Context.ALARM_SERVICE)).cancel(getPendingIntent());
+        getAlarmManager().cancel(getPendingIntent());
         mStartAlarmButton.setEnabled(true);
         mStopAlarmButton.setEnabled(false);
     }
@@ -131,6 +131,7 @@ public class AlarmManagerDemo extends AppCompatActivity {
         return PendingIntent.getService(this, 0, intent, 0);
     }
 
+    @SuppressWarnings("unused")
     private void scheduleSetAlarm() {
         Log.d(TAG, "scheduleSetAlarm: ");
         mHandler.post(new Runnable() {
@@ -141,6 +142,15 @@ public class AlarmManagerDemo extends AppCompatActivity {
         });
     }
 
+    @NonNull
+    private AlarmManager getAlarmManager() {
+        AlarmManager manager = ((AlarmManager) getSystemService(Context.ALARM_SERVICE));
+        if (manager == null) {
+            throw new IllegalStateException("cannot get ALARM_SERVICE");
+        }
+        return manager;
+    }
+
     //
     // Button Listener
     //
@@ -148,15 +158,17 @@ public class AlarmManagerDemo extends AppCompatActivity {
     @SuppressLint("ApplySharedPref")
     public void onStartAlarmClick(View view) {
         Log.d(TAG, "onStartAlarmClick: ");
-        mSharedPreferences.edit().putInt(PREFS_KEY_ALARM_TRIG, ALARM_TRIG_START).commit();
-        scheduleSetAlarm();
+        if (mSharedPreferences.edit().putInt(PREFS_KEY_ALARM_TRIG, ALARM_TRIG_START).commit()) {
+            startAlarmInternal();
+        }
     }
 
     @SuppressLint("ApplySharedPref")
     public void onStopAlarmClick(View view) {
         Log.d(TAG, "onStopAlarmClick: start");
-        mSharedPreferences.edit().putInt(PREFS_KEY_ALARM_TRIG, ALARM_TRIG_STOP).commit();
-        scheduleSetAlarm();
+        if (mSharedPreferences.edit().putInt(PREFS_KEY_ALARM_TRIG, ALARM_TRIG_STOP).commit()) {
+            stopAlarmInternal();
+        }
     }
 
     public void onShowForegroundClick(View view) {
