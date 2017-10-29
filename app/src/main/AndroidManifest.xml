@@ -43,6 +43,10 @@
             android:name=".JobSchedulerDemo"
             android:label="JobSchedulerDemo"/>
 
+        <activity
+            android:name=".JobDispatcherDemo"
+            android:label="JobDispatcherDemo"/>
+
         <service
             android:name=".service.TimerService"
             android:process=":timer_service"/>
@@ -62,6 +66,14 @@
         <service
             android:name=".service.RingtoneJobService"
             android:permission="android.permission.BIND_JOB_SERVICE"/>
+
+        <service
+            android:name=".service.RingtoneJobDispatcherService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+            </intent-filter>
+        </service>
 
     </application>
 
