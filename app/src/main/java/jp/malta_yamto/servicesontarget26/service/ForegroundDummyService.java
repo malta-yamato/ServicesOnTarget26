@@ -19,8 +19,8 @@ package jp.malta_yamto.servicesontarget26.service;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 import android.util.Log;
 
 import jp.malta_yamto.servicesontarget26.NotificationHelper;

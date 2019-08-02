@@ -24,8 +24,8 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Color;
 import android.os.Build;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import jp.malta_yamto.servicesontarget26.service.ForegroundLocalTimerService;
 import jp.malta_yamto.servicesontarget26.service.ForegroundTimerService;

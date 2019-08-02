@@ -17,7 +17,7 @@
 package jp.malta_yamto.servicesontarget26.service;
 
 import android.content.Intent;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
 
 import jp.malta_yamto.servicesontarget26.NotificationHelper;
 
