@@ -3,6 +3,7 @@
     package="jp.malta_yamto.servicesontarget26">
 
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="false"
