@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="jp.malta_yamto.servicesontarget26">
 
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
@@ -11,80 +12,88 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".ActivityLauncher">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <activity
             android:name=".TimerServiceDemo"
-            android:label="TimerServiceDemo"/>
+            android:label="TimerServiceDemo" />
 
         <activity
             android:name=".ForegroundTimerServiceDemo"
-            android:label="ForegroundTimerServiceDemo"/>
+            android:label="ForegroundTimerServiceDemo" />
 
         <activity
             android:name=".LocalTimerServiceDemo"
-            android:label="LocalTimerServiceDemo"/>
+            android:label="LocalTimerServiceDemo" />
 
         <activity
             android:name=".ForegroundLocalTimerServiceDemo"
-            android:label="ForegroundLocalTimerServiceDemo"/>
+            android:label="ForegroundLocalTimerServiceDemo" />
 
         <activity
             android:name=".AlarmManagerDemo"
-            android:label="AlarmManagerDemo"/>
+            android:label="AlarmManagerDemo" />
 
         <activity
             android:name=".JobSchedulerDemo"
-            android:label="JobSchedulerDemo"/>
+            android:label="JobSchedulerDemo" />
 
         <activity
             android:name=".JobDispatcherDemo"
-            android:label="JobDispatcherDemo"/>
+            android:label="JobDispatcherDemo" />
 
         <activity
             android:name=".JobIntentServiceDemo"
-            android:label="JobIntentServiceDemo"/>
+            android:label="JobIntentServiceDemo" />
+
+        <activity android:name=".StreamServiceDemo"
+            android:label="StreamServiceDemo"/>
 
         <service
             android:name=".service.TimerService"
-            android:process=":timer_service"/>
+            android:process=":timer_service" />
 
         <service
             android:name=".service.ForegroundTimerService"
-            android:process=":foreground_timer_service"/>
+            android:process=":foreground_timer_service" />
 
-        <service android:name=".service.LocalTimerService"/>
+        <service android:name=".service.LocalTimerService" />
 
-        <service android:name=".service.ForegroundLocalTimerService"/>
+        <service android:name=".service.ForegroundLocalTimerService" />
 
-        <service android:name=".service.RingtoneService"/>
+        <service android:name=".service.RingtoneService" />
 
-        <service android:name=".service.ForegroundDummyService"/>
+        <service android:name=".service.ForegroundDummyService" />
 
         <service
             android:name=".service.RingtoneJobService"
-            android:permission="android.permission.BIND_JOB_SERVICE"/>
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <service
             android:name=".service.RingtoneJobDispatcherService"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
             </intent-filter>
         </service>
 
         <service
             android:name=".service.RingtoneJobIntentService"
-            android:permission="android.permission.BIND_JOB_SERVICE"/>
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
-        <receiver android:name=".service.AlarmReceiver"/>
+        <service
+            android:name=".service.StreamService"
+            android:process=":stream_service" />
+
+        <receiver android:name=".service.AlarmReceiver" />
 
     </application>
 
