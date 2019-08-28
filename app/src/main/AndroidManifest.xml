@@ -3,9 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="jp.malta_yamto.servicesontarget26">
 
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
@@ -54,8 +51,11 @@
             android:name=".JobIntentServiceDemo"
             android:label="JobIntentServiceDemo" />
 
-        <activity android:name=".StreamServiceDemo"
-            android:label="StreamServiceDemo"/>
+        <activity
+            android:name=".StreamServiceDemo"
+            android:label="StreamServiceDemo" />
+
+        <receiver android:name=".service.AlarmReceiver" />
 
         <service
             android:name=".service.TimerService"
@@ -91,10 +91,17 @@
 
         <service
             android:name=".service.StreamService"
-            android:process=":stream_service" />
-
-        <receiver android:name=".service.AlarmReceiver" />
+            android:exported="true"
+            android:process=":stream_service">
+            <intent-filter>
+                <action android:name="jp.malta_yamto.servicesontarget26.ACTION_BIND" />
+            </intent-filter>
+        </service>
 
     </application>
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
 </manifest>
