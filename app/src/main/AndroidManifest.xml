@@ -55,6 +55,10 @@
             android:name=".StreamServiceDemo"
             android:label="StreamServiceDemo" />
 
+        <activity
+            android:name=".MultiBindDemo"
+            android:label="MultiBindDemo" />
+
         <receiver android:name=".service.AlarmReceiver" />
 
         <service
@@ -97,6 +101,19 @@
                 <action android:name="jp.malta_yamto.servicesontarget26.ACTION_BIND" />
             </intent-filter>
         </service>
+
+        <service
+            android:name=".service.MultiBindService"
+            android:process=":multi_bind_service" />
+        <service
+            android:name=".service.MultiBindClientA"
+            android:process=":multi_bind_client_A" />
+        <service
+            android:name=".service.MultiBindClientB"
+            android:process=":multi_bind_client_B" />
+        <service
+            android:name=".service.MultiBindClientC"
+            android:process=":multi_bind_client_C" />
 
     </application>
 
